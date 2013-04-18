@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>ajgon-datauri</string>
+	<key>connections</key>
+	<dict>
+		<key>50108BFF-0B32-4E6D-99AD-C14822382717</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>1170C04A-4BB7-42A0-A315-3EB574BA20AA</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>6F9991A5-5B59-47FF-AEB4-871310E3088B</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>7B2DE661-E1ED-437B-BE8F-B1A209DAA906</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>F47C63DF-AA8D-40EB-9A5C-660843BCF11D</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Copy to clipboard</string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Igor Rzegocki</string>
+	<key>description</key>
+	<string>Create Data URI scheme for specified file</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Data URI scheme</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>acceptsmulti</key>
+				<false/>
+				<key>filetypes</key>
+				<array/>
+				<key>name</key>
+				<string>Create Data URI</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.trigger.action</string>
+			<key>uid</key>
+			<string>50108BFF-0B32-4E6D-99AD-C14822382717</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<true/>
+				<key>clipboardtext</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>7B2DE661-E1ED-437B-BE8F-B1A209DAA906</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>0</integer>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>keyword</key>
+				<string>datauri</string>
+				<key>runningsubtext</key>
+				<string>Working...</string>
+				<key>script</key>
+				<string>QUERY={query}
+FILENAME=`basename "${QUERY}"`
+MIME=`file -I "${QUERY}" | tr -d ' ' | cut -d: -f2 | cut -d\; -f1`
+rm -rf /tmp/alfred.datauri
+mkdir /tmp/alfred.datauri
+cp "${QUERY}" /tmp/alfred.datauri/
+./imageOptim /tmp/alfred.datauri &gt; /dev/null 2&gt;&amp;1
+./imageOptim /tmp/alfred.datauri &gt; /dev/null 2&gt;&amp;1
+RESULT="data:${MIME};base64,`base64 /tmp/alfred.datauri/${FILENAME}`"
+SHORTRESULT="data:${MIME};base64,&amp;lt;base64 string&amp;gt;"
+echo '&lt;?xml version="1.0"?&gt;'
+echo "&lt;items&gt;"
+echo "&lt;item uid='datauri' arg='${RESULT}' valid='yes'&gt;&lt;title&gt;${SHORTRESULT}&lt;/title&gt;&lt;subtitle&gt;Press Enter to paste, or Cmd+Enter to copy&lt;/subtitle&gt;&lt;icon&gt;50108BFF-0B32-4E6D-99AD-C14822382717.png&lt;/icon&gt;&lt;/item&gt;"
+echo "&lt;/items&gt;"</string>
+				<key>subtext</key>
+				<string>Create Data URI scheme for specified file</string>
+				<key>title</key>
+				<string>Data URI scheme</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>6F9991A5-5B59-47FF-AEB4-871310E3088B</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>4</integer>
+				<key>script</key>
+				<string>tell application "Alfred 2" to search "datauri {query}"</string>
+				<key>type</key>
+				<integer>6</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>1170C04A-4BB7-42A0-A315-3EB574BA20AA</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string></string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>F47C63DF-AA8D-40EB-9A5C-660843BCF11D</string>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>1170C04A-4BB7-42A0-A315-3EB574BA20AA</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>50108BFF-0B32-4E6D-99AD-C14822382717</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>6F9991A5-5B59-47FF-AEB4-871310E3088B</key>
+		<dict>
+			<key>ypos</key>
+			<real>140</real>
+		</dict>
+		<key>7B2DE661-E1ED-437B-BE8F-B1A209DAA906</key>
+		<dict>
+			<key>ypos</key>
+			<real>140</real>
+		</dict>
+		<key>F47C63DF-AA8D-40EB-9A5C-660843BCF11D</key>
+		<dict>
+			<key>ypos</key>
+			<real>260</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/ajgon/alfred2-datauri</string>
+</dict>
+</plist>
