@@ -133,7 +133,7 @@ function selectBestOptimisation {
   # name. These were created when we ran each optimiser in turn.
   # Sort the results of this search by file size in bytes, in
   # ascending order
-  for copyName in `find -E $scope -regex '.*(advpng|gifsicle|jpegoptim|jpegtran|optipng|pngcrush|pngout).*' | xargs wc -c | sed '$ d' | sort -n | awk '{print $2}'`; do
+  for copyName in `find -E $scope -regex '.*(advpng|gifsicle|jpegoptim|jpegtran|optipng|pngcrush|pngout|svgo).*' | xargs wc -c | sort -n | awk '{print $2}'`; do
     # keep the first (smallest) file
     if [ $isSmallestFile == 1 ]; then
       # record it's size before...
@@ -146,7 +146,7 @@ function selectBestOptimisation {
       isSmallestFile=0
     else
       # delete any other less successful optimisation attempts
-      rm $copyName
+      rm $copyName 2> /dev/null
     fi
   done
 }
@@ -198,6 +198,7 @@ function optimiseFiles {
   optimiseFilesByType "pnm" pnmOptimisers[@]
   optimiseFilesByType "tga" tgaOptimisers[@]
   optimiseFilesByType "tiff" tiffOptimisers[@]
+  optimiseFilesByType "svg" svgOptimisers[@]
 
   local totalBytesRemoved=$(difference $originalTotal $optimisedTotal)
   echo $tableBorder
@@ -306,6 +307,19 @@ function jpegtranBridge {
 }
 
 # ====================================================================
+# svgo (svg)
+# ====================================================================
+# ($1:fileName, $2:copyName)
+function svgoCommand {
+  "${bin}/svgo" -i $1 -o $2
+}
+
+# ($1:fileName, $2:extension)
+function svgoBridge {
+  applyOptimisation $1 $2 svgoCommand "svgo"
+}
+
+# ====================================================================
 # Initialise
 # ====================================================================
 
@@ -334,6 +348,12 @@ pngOptimisers=(advpng optipng pngcrush pngout)
 pnmOptimisers=(optipng)
 tgaOptimisers=(pngout)
 tiffOptimisers=(optipng)
+NODE=`which node`
+if [ $? -eq 0 ]; then
+  svgOptimisers=(svgo)
+else
+  svgOptimisers=()
+fi
 
 # size of files before optimisation
 originalTotal=0
